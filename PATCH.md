@@ -96,3 +96,22 @@ being enlarged, producing images that were slightly shorter than the grid's
 reserved thumbnail box. The final PNG is now resized to the exact configured
 thumbnail dimensions, so fixed placeholders do not move their rows when they
 finish loading.
+
+## Stabilize the initial browser layout
+
+The server-rendered browser shell differed from the hydrated gallery in several
+visible ways. The saved theme was applied late, breadcrumb chevrons were added
+only by JavaScript, the list header appeared before grid mode replaced it, and
+the control-panel footer and REPL link were visible while the gallery was still
+acquiring its height.
+
+The saved theme now applies in the document head before CSS and first paint.
+Server-rendered breadcrumbs include their chevrons, and initial hydration keeps
+those nodes instead of needlessly deleting and recreating them. Breadcrumbs are
+still rebuilt after actual AJAX folder navigation.
+
+The file table remains invisible until hydration confirms list mode. Likewise,
+the control-panel footer and REPL link remain in layout but invisible until the
+first list or grid layout is complete, and hide again while later folder
+navigation is loading. This lets them move to their final positions without
+flashing through intermediate frames.

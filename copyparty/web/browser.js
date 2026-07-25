@@ -5617,6 +5617,7 @@ var thegrid = (function () {
 		var vis = has(perms, "read");
 		gfiles.style.display = vis && r.en ? '' : 'none';
 		lfiles.style.display = vis && !r.en ? '' : 'none';
+		clmod(lfiles, 'ready', vis && !r.en);
 		clmod(ggrid, 'crop', r.crop);
 		clmod(ggrid, 'nocrop', !r.crop);
 		ebi('pro').style.display = ebi('epi').style.display = ebi('lazy').style.display = ebi('treeul').style.display = ebi('treepar').style.display = '';
@@ -5631,6 +5632,10 @@ var thegrid = (function () {
 
 		aligngriditems();
 		restore_scroll();
+		if (!r.en) {
+			clmod(ebi('wfp'), 'ready', 1);
+			clmod(ebi('repl'), 'ready', 1);
+		}
 	};
 
 	r.setdirty = function () {
@@ -5954,6 +5959,8 @@ var thegrid = (function () {
 		aligngriditems();
 		scroll_grid_ready = true;
 		restore_scroll();
+		clmod(ebi('wfp'), 'ready', 1);
+		clmod(ebi('repl'), 'ready', 1);
 		setTimeout(r.tippen, 20);
 	}
 
@@ -7461,6 +7468,8 @@ var treectl = (function () {
 		persist_scroll();
 		scroll_grid_ready = false;
 		scroll_restore_requested = true;
+		clmod(ebi('wfp'), 'ready');
+		clmod(ebi('repl'), 'ready');
 
 		var xhr = new XHR(),
 			m = /[?&](k=[^&#]+)/.exec(url),
@@ -10071,26 +10080,31 @@ function reload_mp() {
 }
 
 
+var browser_path = get_evpath();
 function reload_browser() {
 	filecols.set_style();
 
-	var parts = get_evpath().split('/'),
+	var evpath = get_evpath(),
+		parts = evpath.split('/'),
 		rm = ebi('entree'),
 		ftab = ebi('files'),
 		link = '', o;
 
-	while (rm.nextSibling)
-		rm.parentNode.removeChild(rm.nextSibling);
+	if (evpath != browser_path) {
+		browser_path = evpath;
+		while (rm.nextSibling)
+			rm.parentNode.removeChild(rm.nextSibling);
 
-	for (var a = 0; a < parts.length - 1; a++) {
-		link += parts[a] + '/';
-		var link2 = dks[link] ? addq(link, 'k=' + dks[link]) : link;
+		for (var a = 0; a < parts.length - 1; a++) {
+			link += parts[a] + '/';
+			var link2 = dks[link] ? addq(link, 'k=' + dks[link]) : link;
 
-		o = mknod('a');
-		o.setAttribute('href', link2);
-		o.textContent = uricom_dec(parts[a]) || '/';
-		ebi('path').appendChild(mknod('i'));
-		ebi('path').appendChild(o);
+			o = mknod('a');
+			o.setAttribute('href', link2);
+			o.textContent = uricom_dec(parts[a]) || '/';
+			ebi('path').appendChild(mknod('i'));
+			ebi('path').appendChild(o);
+		}
 	}
 
 	reload_mp();

@@ -626,6 +626,10 @@ html.y #path {
 	top: -.3em;
 	border-spacing: 0;
 	position: relative;
+	visibility: hidden;
+}
+#files.ready {
+	visibility: visible;
 }
 #files tbody a {
 	display: block;
@@ -915,6 +919,14 @@ html.dz #flogout {
 	padding-left: .5em;
 	margin-left: .5em;
 	border-left: .2em solid var(--bg-u5);
+}
+#wfp,
+#repl {
+	visibility: hidden;
+}
+#wfp.ready,
+#repl.ready {
+	visibility: visible;
 }
 #repl {
 	padding: .33em;
