@@ -5943,6 +5943,8 @@ var thegrid = (function () {
 		r.bagit('#ggrid');
 		r.loadsel();
 		aligngriditems();
+		scroll_grid_ready = true;
+		restore_scroll();
 		setTimeout(r.tippen, 20);
 	}
 
@@ -6082,6 +6084,7 @@ var thegrid = (function () {
 
 function th_onload() {
 	this.style.height = '';
+	restore_scroll_pending();
 }
 
 
@@ -7446,6 +7449,10 @@ var treectl = (function () {
 		if (IE && !history.pushState)
 			return location = url;
 
+		persist_scroll();
+		scroll_grid_ready = false;
+		scroll_restore_requested = true;
+
 		var xhr = new XHR(),
 			m = /[?&](k=[^&#]+)/.exec(url),
 			k = m ? '&' + m[1] : dk ? '&k=' + dk : '',
@@ -7643,6 +7650,7 @@ var treectl = (function () {
 
 	r.gentab = function (top, res) {
 		showfile.untail();
+		scroll_vp = top;
 		var nodes = res.dirs.concat(res.files),
 			html = mk_files_header(res.taglist),
 			sel = msel.hist[top],
@@ -9671,9 +9679,17 @@ ebi('path').onclick = function (e) {
 };
 
 
-var scroll_y = -1;
-var scroll_vp = '\n';
+var scroll_hist = {};
+var scroll_vp = get_evpath();
 var scroll_obj = null;
+var scroll_pending = null;
+var scroll_grid_ready = true;
+var scroll_restore_requested = false;
+try {
+	history.scrollRestoration = 'manual';
+}
+catch (ex) { }
+
 function persist_scroll() {
 	var obj = scroll_obj;
 	if (!obj) {
@@ -9685,13 +9701,66 @@ function persist_scroll() {
 	if (y > 0)
 		scroll_obj = obj;
 
-	scroll_y = y;
-	scroll_vp = get_evpath();
+	var st = { y: y };
+	if (thegrid && thegrid.en) {
+		var tiles = QSA('#ggrid>a');
+		for (var a = 0; a < tiles.length; a++) {
+			var rect = tiles[a].getBoundingClientRect();
+			if (rect.bottom > 0) {
+				st.ref = tiles[a].getAttribute('ref');
+				st.dy = rect.top;
+				break;
+			}
+		}
+	}
+	scroll_hist[scroll_vp] = st;
 }
+
 function restore_scroll() {
-	if (get_evpath() == scroll_vp && scroll_obj && scroll_obj.scrollTop < 1)
-		scroll_obj.scrollTop = scroll_y;
+	var vp = get_evpath(),
+		st = scroll_hist[vp];
+
+	if (thegrid.en && !scroll_grid_ready)
+		return;
+	if (!scroll_restore_requested && yscroll() > 0)
+		return;
+	scroll_restore_requested = false;
+	if (!st)
+		return;
+
+	scroll_pending = {
+		vp: vp,
+		y: st.y,
+		ref: st.ref,
+		dy: st.dy,
+		until: Date.now() + 30000
+	};
+	restore_scroll_pending();
 }
+
+function restore_scroll_pending() {
+	var st = scroll_pending;
+	if (!st || st.vp != get_evpath() || Date.now() > st.until) {
+		scroll_pending = null;
+		return;
+	}
+	if (thegrid.en && !scroll_grid_ready)
+		return;
+
+	var y = st.y;
+	if (thegrid.en && st.ref) {
+		var el = QS('#ggrid>a[ref="' + st.ref + '"]');
+		if (el)
+			y = yscroll() + el.getBoundingClientRect().top - st.dy;
+	}
+	window.scrollTo(0, Math.max(0, Math.floor(y)));
+}
+
+function cancel_scroll_restore() {
+	scroll_pending = null;
+}
+window.addEventListener('touchstart', cancel_scroll_restore, { passive: true });
+window.addEventListener('wheel', cancel_scroll_restore, { passive: true });
 
 
 ebi('files').onclick = ebi('docul').onclick = function (e) {

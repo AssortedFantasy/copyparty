@@ -51,3 +51,18 @@ Grid thumbnail images, their links, and full-size gallery preview images are
 now non-draggable on touch devices. Thumbnail links remain normal links so
 actions such as opening them in a new tab continue to work. Desktop dragging
 is unchanged.
+
+## Restore gallery scroll positions reliably
+
+Copyparty previously kept only one global saved scroll position, so navigating
+through nested image folders overwrote the position of the parent folder.
+Grid-folder navigation also bypassed that saving logic entirely. Returning
+with browser Back could therefore leave the previous folder at an unrelated
+position.
+
+Scroll state is now stored independently for each folder and records the first
+visible tile plus its viewport offset. Restoration waits until the destination
+grid has been rebuilt, then keeps that tile anchored while slow, variable-size
+thumbnails above it finish loading. A deliberate touch or wheel action cancels
+the correction immediately. Native browser scroll restoration is disabled so
+it does not compete with copyparty's single-page navigation.
