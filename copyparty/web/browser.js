@@ -5751,6 +5751,108 @@ var thegrid = (function () {
 		ev(e);
 	}
 
+	var thumb_io = null,
+		thumb_wait = [],
+		thumb_active = 0,
+		thumb_gen = 0,
+		thumb_limit = 6;
+
+	function stop_thumb_loader() {
+		if (thumb_io)
+			thumb_io.disconnect();
+
+		thumb_io = null;
+		thumb_wait = [];
+		thumb_active = 0;
+		thumb_gen++;
+	}
+
+	function thumb_distance(img) {
+		var r = img.getBoundingClientRect(),
+			vh = window.innerHeight || document.documentElement.clientHeight;
+
+		if (r.bottom < 0)
+			return -r.bottom;
+
+		if (r.top > vh)
+			return r.top - vh;
+
+		return 0;
+	}
+
+	function pump_thumbs() {
+		if (!thumb_io || thumb_active >= thumb_limit)
+			return;
+
+		thumb_wait.sort(function (a, b) {
+			return thumb_distance(a) - thumb_distance(b);
+		});
+
+		while (thumb_active < thumb_limit && thumb_wait.length) {
+			var img = thumb_wait.shift(),
+				src = img.getAttribute('data-src');
+
+			img._th_queued = false;
+			if (!img._th_near || !src || !document.documentElement.contains(img))
+				continue;
+
+			img._th_started = true;
+			img._th_gen = thumb_gen;
+			thumb_active++;
+			img.setAttribute('loading', 'eager');
+			img.setAttribute('fetchpriority', thumb_distance(img) ? 'auto' : 'high');
+			img.setAttribute('src', src);
+			img.removeAttribute('data-src');
+		}
+	}
+
+	function finish_thumb(img, loaded) {
+		if (img._th_done)
+			return;
+
+		img._th_done = true;
+		if (loaded)
+			th_onload.call(img);
+
+		if (img._th_gen != thumb_gen)
+			return;
+
+		if (thumb_io)
+			thumb_io.unobserve(img);
+
+		thumb_active--;
+		pump_thumbs();
+	}
+
+	function start_thumb_loader(ths) {
+		stop_thumb_loader();
+		var margin = Math.max(window.innerHeight || 0, 800);
+
+		thumb_io = new IntersectionObserver(function (ents) {
+			for (var a = 0; a < ents.length; a++) {
+				var img = ents[a].target;
+				img._th_near = ents[a].isIntersecting;
+				if (img._th_near && !img._th_started && !img._th_queued) {
+					img._th_queued = true;
+					thumb_wait.push(img);
+				}
+			}
+			pump_thumbs();
+		}, {
+			rootMargin: margin + 'px 0px'
+		});
+
+		for (var a = 0, aa = ths.length; a < aa; a++) {
+			ths[a].onload = function () {
+				finish_thumb(this, true);
+			};
+			ths[a].onerror = function () {
+				finish_thumb(this, false);
+			};
+			thumb_io.observe(ths[a]);
+		}
+	}
+
 	r.imshow = function (url) {
 		var sel = '#ggrid>a'
 		if (!thegrid.en) {
@@ -5850,6 +5952,7 @@ var thegrid = (function () {
 			svgs = new Set(),
 			max_svgs = CHROME ? 500 : 5000,
 			nodrag = MOBILE ? ' draggable="false"' : '',
+			defer_thumbs = r.thumbs && !!window.IntersectionObserver,
 			need_ext = !r.thumbs || !!ext_th,
 			use_ext_th = r.thumbs && ext_th,
 			files = QSA('#files>tbody>tr>td:nth-child(2) a[id]');
@@ -5928,14 +6031,19 @@ var thegrid = (function () {
 				' style="' + (!r.crop && aspect ?
 					'aspect-ratio:auto ' + aspect + ';' : '') +
 				'height:' + iheight +
-				'em" loading="lazy" fetchPriority="low" src="' +
+				'em" loading="lazy" fetchPriority="low" ' +
+				(defer_thumbs ? 'data-src="' : 'src="') +
 				ihref + '" /><span' + ac + '>' + ao.innerHTML + '</span></a>');
 		}
+		stop_thumb_loader();
 		ggrid.innerHTML = html.join('\n');
 
 		var ths = QSA('#ggrid>a>img');
-		for (var a = 0, aa = ths.length; a < aa; a++)
-			ths[a].onload = th_onload;
+		if (defer_thumbs)
+			start_thumb_loader(ths);
+		else
+			for (var a = 0, aa = ths.length; a < aa; a++)
+				ths[a].onload = th_onload;
 
 		clmod(ggrid, 'crop', r.crop);
 		clmod(ggrid, 'nocrop', !r.crop);

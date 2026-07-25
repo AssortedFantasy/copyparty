@@ -123,3 +123,15 @@ The gallery uses that ratio to reserve the uncropped folder tile's final height
 before requesting its thumbnail, just as it already does for image files. This
 prevents folder covers from first appearing at the placeholder height and then
 expanding once decoded, and does not depend on a warm thumbnail cache.
+
+## Prioritize thumbnails near the viewport
+
+The gallery now keeps thumbnail URLs deferred until their tiles approach the
+viewport, with at most six requests active at once. Waiting thumbnails are
+continually ranked by their distance from the visible area, so jumping through
+a large gallery prioritizes the images currently on screen instead of loading
+every skipped tile first.
+
+Completed requests remain loaded, while tiles that leave the nearby region
+before their request starts are skipped. Browsers without
+`IntersectionObserver` retain the previous native lazy-loading behavior.
