@@ -31,9 +31,11 @@ class Ico(object):
 
         w = 100
         h = 30
+        thumb_res = None
         if as_thumb:
             sw, sh = self.args.th_size.split("x")
-            h = int(100.0 / (float(sw) / float(sh)))
+            thumb_res = (int(sw), int(sh))
+            h = 100.0 / (float(sw) / float(sh))
 
         if chrome:
             # cannot handle more than ~2000 unique SVGs
@@ -54,7 +56,7 @@ class Ico(object):
                     xy = (int((w - tw) / 2), int((h - th) / 2))
                     pb.text(xy, ext2, fill="#" + c[6:], font_size=16)
 
-                    img = img.resize((w * 2, h * 2), Image.NEAREST)
+                    img = img.resize(thumb_res or (w * 2, h * 2), Image.NEAREST)
 
                     buf = BytesIO()
                     img.save(buf, format="PNG", compress_level=1)
@@ -84,7 +86,7 @@ class Ico(object):
                     pb.text((x, (h - th) // 2), " %s " % (ch,), fill=fill)
                     x += cw
 
-                img = img.resize((w * 3, h * 3), Image.NEAREST)
+                img = img.resize(thumb_res or (w * 3, h * 3), Image.NEAREST)
 
                 buf = BytesIO()
                 img.save(buf, format="PNG", compress_level=1)

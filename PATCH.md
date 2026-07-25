@@ -87,3 +87,12 @@ with icon links. The empty element previously had almost no height, causing the
 page below it to jump when the icons appeared. An invisible placeholder now
 reserves the same line geometry while the toolbar is empty, so hydration does
 not move the rest of the page.
+
+## Keep generated placeholder thumbnails at the configured ratio
+
+Chrome receives generated file and folder placeholders as raster PNGs. Their
+small drawing canvases previously rounded the configured thumbnail ratio before
+being enlarged, producing images that were slightly shorter than the grid's
+reserved thumbnail box. The final PNG is now resized to the exact configured
+thumbnail dimensions, so fixed placeholders do not move their rows when they
+finish loading.
