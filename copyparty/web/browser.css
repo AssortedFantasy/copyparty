@@ -959,6 +959,12 @@ html.dz #flogout {
 	-webkit-box-orient: vertical;
 	padding-top: .075em;
 }
+#ggrid.noname>a {
+	align-self: start;
+}
+#ggrid.noname>a>span {
+	display: none;
+}
 #ggrid>a {
 	display: inline-block;
 	width: 10em;

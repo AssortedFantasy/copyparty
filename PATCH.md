@@ -33,3 +33,10 @@ The upstream grid leaves generous margins, padding, and gaps around thumbnail
 tiles. These values are reduced to roughly one quarter of their defaults so
 images occupy more of the available screen while retaining upstream's
 variable-aspect-ratio row layout.
+
+## Add a filename-free thumbnail mode
+
+A new `no names` grid control sits beside the existing crop and 3x controls.
+It is enabled by default and persists in browser storage. When enabled, both
+the filename and its surrounding chin are removed from every thumbnail tile;
+turning it off restores the normal filename display and chop controls.

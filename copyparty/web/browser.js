@@ -491,6 +491,7 @@ if (1)
 		"gt_msel": "enable file selection; ctrl-click a file to override$N$N&lt;em&gt;when active: doubleclick a file / folder to open it&lt;/em&gt;$N$NHotkey: S\">multiselect",
 		"gt_crop": "center-crop thumbnails\">crop",
 		"gt_3x": "hi-res thumbnails\">3x",
+		"gt_noname": "hide filenames below thumbnails\">no names",
 		"gt_zoom": "zoom",
 		"gt_chop": "chop",
 		"gt_sort": "sort by",
@@ -5551,6 +5552,7 @@ var thegrid = (function () {
 		'<a href="#" class="tgl btn" id="gridsel" tt="' + L.gt_msel + '</a> ' +
 		'<a href="#" class="tgl btn" id="gridcrop" tt="' + L.gt_crop + '</a> ' +
 		'<a href="#" class="tgl btn" id="grid3x" tt="' + L.gt_3x + '</a> ' +
+		'<a href="#" class="tgl btn" id="gridnoname" tt="' + L.gt_noname + '</a> ' +
 		'<span>' + L.gt_zoom + ': ' +
 		'<a href="#" class="btn" z="-1.1" tt="Hotkey: shift-A">&ndash;</a> ' +
 		'<a href="#" class="btn" z="1.1" tt="Hotkey: shift-D">+</a></span> <span>' + L.gt_chop + ': ' +
@@ -5637,6 +5639,11 @@ var thegrid = (function () {
 			loadgrid();
 		else
 			r.setvis();
+	};
+
+	r.set_noname = function () {
+		clmod(ggrid, 'noname', r.noname);
+		aligngriditems();
 	};
 
 	r.autogrid = function (res) {
@@ -6045,6 +6052,8 @@ var thegrid = (function () {
 	bcfg_bind(r, 'vau', 'gridvau', false);
 	bcfg_bind(r, 'crop', 'gridcrop', !dcrop.endsWith('n'), r.set_crop);
 	bcfg_bind(r, 'x3', 'grid3x', dth3x.endsWith('y'), r.set_x3);
+	bcfg_bind(r, 'noname', 'gridnoname', true, r.set_noname);
+	r.set_noname();
 	bcfg_bind(r, 'sel', 'gridsel', false, r.loadsel);
 	bcfg_bind(r, 'en', 'griden', dgrid, function (v) {
 		v ? loadgrid() : r.setvis(true);
