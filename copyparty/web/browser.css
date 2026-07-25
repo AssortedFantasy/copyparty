@@ -948,7 +948,7 @@ html.dz #flogout {
 	border-bottom: var(--btn-1h-bb);
 }
 #ggrid {
-	margin: -.2em -.5em;
+	margin: -.05em -.125em;
 }
 #ggrid>a>span {
 	overflow: hidden;
@@ -957,7 +957,7 @@ html.dz #flogout {
 	line-clamp: var(--grid-ln);
 	-webkit-line-clamp: var(--grid-ln);
 	-webkit-box-orient: vertical;
-	padding-top: .3em;
+	padding-top: .075em;
 }
 #ggrid>a {
 	display: inline-block;
@@ -966,8 +966,8 @@ html.dz #flogout {
 	vertical-align: top;
 	overflow-wrap: break-word;
 	border-radius: .3em;
-	padding: .3em;
-	margin: .5em;
+	padding: .075em;
+	margin: .125em;
 	color: var(--g-fg);
 	background: var(--g-bg);
 	border: 1px solid var(--g-b1);
@@ -3296,16 +3296,16 @@ html.d #treepar {
 @supports (display: grid) and (gap: 1em) {
 	#ggrid {
 		display: grid;
-		margin: 0em 0.25em;
+		margin: 0 .0625em;
 		padding: unset;
 		grid-template-columns: repeat(auto-fit,var(--grid-sz));
 		justify-content: center;
-		gap: 1em;
+		gap: .25em;
 	}
 
 	html.b #ggrid {
-		padding: 0 0 2em 0;
-		gap: 1em 1.5em;
+		padding: 0 0 .5em 0;
+		gap: .25em .375em;
 	}
 
 	#ggrid > a {
@@ -3315,7 +3315,7 @@ html.d #treepar {
 
   	#ggrid>a>span {
 		text-align: center;
-		padding: .2em .2em .15em .2em;
+		padding: .05em .05em .0375em .05em;
 	}
 }
 
@@ -3851,7 +3851,7 @@ html.e #gfiles {
 html.e #ggrid {
   background-color: var(--inset-bg);
   box-shadow: var(--shadow-input);
-  padding: 1.5em;
+  padding: .375em;
   margin: 0;
   overflow-x: scroll;
 }

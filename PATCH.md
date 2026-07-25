@@ -26,3 +26,10 @@ browser. Large directories initially render a limited number of rows, commonly
 250, so the gallery silently ended there until scrolling caused more rows to be
 loaded. Entering grid mode now expands the complete directory listing before
 the gallery is built, ensuring its item count covers the entire directory.
+
+## Tighten thumbnail-grid spacing
+
+The upstream grid leaves generous margins, padding, and gaps around thumbnail
+tiles. These values are reduced to roughly one quarter of their defaults so
+images occupy more of the available screen while retaining upstream's
+variable-aspect-ratio row layout.
