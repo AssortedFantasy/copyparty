@@ -744,7 +744,7 @@ window.baguetteBox = (function () {
                 options[item] = newOptions[item];
         }
 
-        var an = options.animation = sread('ganim', anims) || anims[ANIM ? 0 : 2];
+        var an = options.animation = sread('ganim', anims) || anims[2];
         btnAnim.textContent = ['⇄', '⮺', '⚡'][anims.indexOf(an)];
         btnAnim.setAttribute('tt', 'animation: ' + an);
 
