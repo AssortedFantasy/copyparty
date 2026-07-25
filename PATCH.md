@@ -79,3 +79,11 @@ intrinsic aspect ratio takes precedence, avoiding distortion when metadata is
 incorrect or does not account for image rotation. Images without valid
 resolution metadata retain the existing placeholder behavior, and cropped
 thumbnail mode is unchanged.
+
+## Reserve the toolbar height during page startup
+
+The server initially renders an empty operations toolbar which JavaScript fills
+with icon links. The empty element previously had almost no height, causing the
+page below it to jump when the icons appeared. An invisible placeholder now
+reserves the same line geometry while the toolbar is empty, so hydration does
+not move the rest of the page.

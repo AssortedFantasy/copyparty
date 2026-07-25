@@ -1395,6 +1395,13 @@ html.y #ops svg circle {
 	padding: .3em .6em;
 	white-space: nowrap;
 }
+#ops:empty::before {
+	content: "\a0";
+	visibility: hidden;
+	font-size: 1.5em;
+	line-height: 1.2em;
+	padding: .25em .4em;
+}
 #noie {
 	color: #b60;
 	margin: 0 0 0 .5em;
