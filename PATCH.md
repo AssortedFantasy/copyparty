@@ -47,6 +47,7 @@ normal image filename display and chop controls.
 On touch devices, holding an image thumbnail to use the browser's link menu
 could also begin a native image/link drag. Copyparty interpreted that as an
 incoming upload and displayed its upload/search drop overlay behind the menu.
-Grid thumbnail images and their links are now non-draggable on touch devices,
-while remaining normal links so actions such as opening them in a new tab
-continue to work. Desktop dragging is unchanged.
+Grid thumbnail images, their links, and full-size gallery preview images are
+now non-draggable on touch devices. Thumbnail links remain normal links so
+actions such as opening them in a new tab continue to work. Desktop dragging
+is unchanged.

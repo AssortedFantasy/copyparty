@@ -976,6 +976,8 @@ window.baguetteBox = (function () {
 
         var image = mknod(is_vid ? 'video' : 'img');
         clmod(imageContainer, 'vid', is_vid);
+        if (MOBILE && !is_vid)
+            image.draggable = false;
 
         bind(image, 'error', lerr);
         bind(image, is_vid ? 'loadedmetadata' : 'load', function () {
