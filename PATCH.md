@@ -38,5 +38,6 @@ variable-aspect-ratio row layout.
 
 A new `no names` grid control sits beside the existing crop and 3x controls.
 It is enabled by default and persists in browser storage. When enabled, both
-the filename and its surrounding chin are removed from every thumbnail tile;
-turning it off restores the normal filename display and chop controls.
+the filename and its surrounding chin are removed from image tiles. Folders
+and non-image files retain their labels. Turning the setting off restores the
+normal image filename display and chop controls.

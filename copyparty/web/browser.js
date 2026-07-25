@@ -5857,7 +5857,8 @@ var thegrid = (function () {
 				name = uricom_dec(vsplit(href)[1]),
 				ref = ao.getAttribute('id'),
 				isdir = href.endsWith('/'),
-				ac = isdir ? ' class="dir"' : '',
+				isimg = img_re.test(href),
+				ac = (isdir ? ' class="dir"' : '') + (isimg ? ' data-img' : ''),
 				ihref = ohref;
 
 			if (need_ext && href != "#") {
