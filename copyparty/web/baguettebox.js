@@ -62,8 +62,13 @@ window.baguetteBox = (function () {
     };
 
     var overlayClickHandler = function (e) {
-        if (e.target.id.indexOf('baguette-img') !== -1)
-            hideOverlay();
+        if (e.target.id.indexOf('baguette-img') === -1)
+            return;
+
+        if (e.clientX < overlay.clientWidth / 2)
+            showLeftImage(e);
+        else
+            showRightImage(e);
     };
 
     var vtouch = function (e) {

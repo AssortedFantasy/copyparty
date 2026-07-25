@@ -5820,6 +5820,10 @@ var thegrid = (function () {
 		if (have_webp === null || have_jxl === null)
 			return setTimeout(loadgrid, 50);
 
+		if (treectl.trunc)
+			return treectl.showmore(
+				treectl.lsc.files.length + treectl.lsc.dirs.length);
+
 		r.setvis();
 		if (!r.dirty)
 			return r.loadsel();
