@@ -66,3 +66,16 @@ grid has been rebuilt, then keeps that tile anchored while slow, variable-size
 thumbnails above it finish loading. A deliberate touch or wheel action cancels
 the correction immediately. Native browser scroll restoration is disabled so
 it does not compete with copyparty's single-page navigation.
+
+## Reserve uncropped thumbnail dimensions before loading
+
+When multimedia indexing provides an image's `res` metadata, the grid now uses
+that aspect ratio to calculate the thumbnail's display height before requesting
+the thumbnail itself. This prevents slow, uncropped thumbnails from changing
+row heights as they load and does not depend on the thumbnail cache.
+
+The indexed ratio is only a pre-load fallback. Once decoded, the thumbnail's
+intrinsic aspect ratio takes precedence, avoiding distortion when metadata is
+incorrect or does not account for image rotation. Images without valid
+resolution metadata retain the existing placeholder behavior, and cropped
+thumbnail mode is unchanged.

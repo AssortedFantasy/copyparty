@@ -5859,8 +5859,15 @@ var thegrid = (function () {
 				ref = ao.getAttribute('id'),
 				isdir = href.endsWith('/'),
 				isimg = img_re.test(href),
+				aspect = isimg ? ao.getAttribute('data-ar') : null,
+				iheight = r.sz / 1.25,
 				ac = (isdir ? ' class="dir"' : '') + (isimg ? ' data-img' : ''),
 				ihref = ohref;
+
+			if (!r.crop && aspect) {
+				var wh = aspect.split('/');
+				iheight = Math.min(r.sz * 2, r.sz * wh[1] / wh[0]);
+			}
 
 			if (need_ext && href != "#") {
 				var ar = href.split('.');
@@ -5913,8 +5920,10 @@ var thegrid = (function () {
 
 			html.push('<a href="' + ohref + '" ref="' + ref +
 				'"' + ac + nodrag + ' ttt="' + esc(name) + '"><img' + nodrag +
-				' style="height:' +
-				(r.sz / 1.25) + 'em" loading="lazy" fetchPriority="low" src="' +
+				' style="' + (!r.crop && aspect ?
+					'aspect-ratio:auto ' + aspect + ';' : '') +
+				'height:' + iheight +
+				'em" loading="lazy" fetchPriority="low" src="' +
 				ihref + '" /><span' + ac + '>' + ao.innerHTML + '</span></a>');
 		}
 		ggrid.innerHTML = html.join('\n');
@@ -7723,9 +7732,12 @@ var treectl = (function () {
 					'" rel="nofollow" class="doc' + (lang ? ' bri' : '') +
 					'" hl="' + id + '" name="' + hname + '">-txt-</a>';
 
-			var cl = /\.PARTIAL$/.exec(fname) ? ' class="fade"' : '',
+			var ar = /^([1-9][0-9]*)x([1-9][0-9]*)$/.exec(
+					'' + (tn.tags || {}).res),
+				da = ar ? ' data-ar="' + ar[1] + '/' + ar[2] + '"' : '',
+				cl = /\.PARTIAL$/.exec(fname) ? ' class="fade"' : '',
 				ln = ['<tr' + cl + '><td>' + tn.lead + '</td><td><a href="' +
-					top + tn.href + '" id="' + id + '">' + hname +
+					top + tn.href + '" id="' + id + '"' + da + '>' + hname +
 					'</a></td><td sortv="' + tn.sz + '">' + filesizefun(tn.sz)];
 
 			for (var b = 0; b < res.taglist.length; b++) {
