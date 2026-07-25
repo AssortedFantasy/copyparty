@@ -7610,6 +7610,28 @@ class HttpCli(object):
             for fe in dirs:
                 fe["tags"] = ODict()
 
+            # provide the dimensions of indexed folder-cover images so the
+            # browser can reserve their uncropped grid height before loading
+            q = """
+                select cv.dn, mt.v
+                  from cv
+                  join up on up.rd = case
+                        when cv.rd = '' then cv.dn
+                        else cv.rd || '/' || cv.dn
+                      end
+                    and up.fn = cv.fn
+                  join mt on mt.w = substr(up.w, 1, 16)
+                 where cv.rd = ? and mt.k = 'res'
+            """
+            try:
+                cover_res = dict(icur.execute(q, (rd,)))
+                for fe in dirs:
+                    zs = cover_res.get(fe["name"])
+                    if zs:
+                        fe["tags"]["res"] = zs
+            except:
+                pass  # old/incomplete index, or mojibake
+
             lmte = list(mte)
             if self.can_admin:
                 lmte.extend(("w", "up_by", "up_ip", ".up_at"))

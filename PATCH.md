@@ -115,3 +115,11 @@ the control-panel footer and REPL link remain in layout but invisible until the
 first list or grid layout is complete, and hide again while later folder
 navigation is loading. This lets them move to their final positions without
 flashing through intermediate frames.
+
+## Reserve folder-cover dimensions before loading
+
+Indexed folder covers now include their image resolution in directory listings.
+The gallery uses that ratio to reserve the uncropped folder tile's final height
+before requesting its thumbnail, just as it already does for image files. This
+prevents folder covers from first appearing at the placeholder height and then
+expanding once decoded, and does not depend on a warm thumbnail cache.

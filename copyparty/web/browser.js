@@ -5864,7 +5864,7 @@ var thegrid = (function () {
 				ref = ao.getAttribute('id'),
 				isdir = href.endsWith('/'),
 				isimg = img_re.test(href),
-				aspect = isimg ? ao.getAttribute('data-ar') : null,
+				aspect = isimg || isdir ? ao.getAttribute('data-ar') : null,
 				iheight = r.sz / 1.25,
 				ac = (isdir ? ' class="dir"' : '') + (isimg ? ' data-img' : ''),
 				ihref = ohref;
