@@ -5844,6 +5844,7 @@ var thegrid = (function () {
 		var html = [],
 			svgs = new Set(),
 			max_svgs = CHROME ? 500 : 5000,
+			nodrag = MOBILE ? ' draggable="false"' : '',
 			need_ext = !r.thumbs || !!ext_th,
 			use_ext_th = r.thumbs && ext_th,
 			files = QSA('#files>tbody>tr>td:nth-child(2) a[id]');
@@ -5911,7 +5912,8 @@ var thegrid = (function () {
 				ihref += "&raster";
 
 			html.push('<a href="' + ohref + '" ref="' + ref +
-				'"' + ac + ' ttt="' + esc(name) + '"><img style="height:' +
+				'"' + ac + nodrag + ' ttt="' + esc(name) + '"><img' + nodrag +
+				' style="height:' +
 				(r.sz / 1.25) + 'em" loading="lazy" fetchPriority="low" src="' +
 				ihref + '" /><span' + ac + '>' + ao.innerHTML + '</span></a>');
 		}
